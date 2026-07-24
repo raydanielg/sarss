@@ -53,7 +53,7 @@ class Examination extends Model
 
     public function classes()
     {
-        return $this->belongsToMany(Classes::class, 'examination_class');
+        return $this->belongsToMany(Classes::class, 'examination_class', 'examination_id', 'class_id');
     }
 
     public function candidates()

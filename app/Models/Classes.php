@@ -15,6 +15,6 @@ class Classes extends Model
 
     public function examinations()
     {
-        return $this->belongsToMany(Examination::class, 'examination_class');
+        return $this->belongsToMany(Examination::class, 'examination_class', 'class_id', 'examination_id');
     }
 }

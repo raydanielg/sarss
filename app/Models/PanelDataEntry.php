@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PanelDataEntry extends Model
 {
+    protected $table = 'panel_data_entry';
     protected $fillable = ['panel_id', 'user_id'];
 
     public function panel()
