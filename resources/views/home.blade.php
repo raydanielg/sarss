@@ -10,13 +10,10 @@
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito:400,500,600,700,800,900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         @keyframes simpleFadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes toastIn { from { opacity:0; transform:translateX(100%); } to { opacity:1; transform:translateX(0); } }
-        @keyframes toastOut { from { opacity:1; transform:translateX(0); } to { opacity:0; transform:translateX(100%); } }
-        .toast-in { animation: toastIn 0.4s cubic-bezier(0.16,1,0.3,1) both; }
-        .toast-out { animation: toastOut 0.3s ease-in both; }
         .page-transition { animation: simpleFadeIn 0.35s ease-out both; }
     </style>
     <script>
@@ -33,9 +30,6 @@
     </script>
 </head>
 <body class="font-['Nunito',sans-serif] antialiased bg-gray-50 text-slate-800 min-h-screen">
-
-    {{-- Toast Container --}}
-    <div id="toastContainer" class="fixed top-5 right-5 z-[60] flex flex-col gap-3 w-full max-w-sm pointer-events-none"></div>
 
     {{-- Sidebar --}}
     <aside class="fixed inset-y-0 left-0 w-64 bg-emerald-700 text-white z-40 transform transition-transform duration-300 lg:translate-x-0 -translate-x-full" id="sidebar">
@@ -209,63 +203,84 @@
         </footer>
     </div>
 
-    {{-- Toast System --}}
+    {{-- SweetAlert2 Notifications --}}
     <script>
-    (function() {
-        const container = document.getElementById('toastContainer');
+    const swalTheme = {
+        customClass: {
+            popup: 'rounded-xl',
+            confirmButton: 'bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-2 rounded-lg text-sm',
+            cancelButton: 'bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold px-5 py-2 rounded-lg text-sm',
+        },
+        buttonsStyling: false,
+    };
 
-        function showToast(type, title, message) {
-            const toast = document.createElement('div');
-            toast.className = 'toast-in pointer-events-auto flex items-start gap-3 p-4 rounded-xl shadow-lg border backdrop-blur-sm';
-
-            let iconSvg, bgClass, borderClass;
-            if (type === 'success') {
-                iconSvg = '<svg class="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
-                bgClass = 'bg-emerald-50/95';
-                borderClass = 'border-emerald-200';
-            } else if (type === 'error') {
-                iconSvg = '<svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
-                bgClass = 'bg-red-50/95';
-                borderClass = 'border-red-200';
-            } else {
-                iconSvg = '<svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
-                bgClass = 'bg-blue-50/95';
-                borderClass = 'border-blue-200';
-            }
-
-            toast.classList.add(...bgClass.split(' '), ...borderClass.split(' '));
-            toast.innerHTML = iconSvg +
-                '<div class="flex-1 min-w-0">' +
-                    '<p class="text-sm font-semibold text-gray-800">' + title + '</p>' +
-                    (message ? '<p class="text-sm text-gray-500 mt-0.5">' + message + '</p>' : '') +
-                '</div>' +
-                '<button onclick="this.parentElement.classList.add(\'toast-out\'); setTimeout(()=>this.parentElement.remove(), 300)" class="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors">' +
-                    '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>' +
-                '</button>';
-
-            container.appendChild(toast);
-
-            setTimeout(() => {
-                toast.classList.add('toast-out');
-                setTimeout(() => toast.remove(), 300);
-            }, 5000);
-        }
-
-        window.showToast = showToast;
-
-        @if(session('status'))
-            showToast('success', 'Success', '{{ session('status') }}');
-        @endif
-
-        // Close user menu on outside click
-        document.addEventListener('click', function(e) {
-            const menu = document.getElementById('userMenu');
-            const btn = document.getElementById('userMenuBtn');
-            if (menu && !menu.contains(e.target) && !btn.contains(e.target)) {
-                menu.classList.add('hidden');
-            }
+    function showToast(type, title, message) {
+        const types = {
+            success: { icon: 'success', color: '#024938' },
+            error: { icon: 'error', color: '#dc2626' },
+            warning: { icon: 'warning', color: '#d97706' },
+            info: { icon: 'info', color: '#2563eb' },
+        };
+        const cfg = types[type] || types.info;
+        Swal.fire({
+            ...swalTheme,
+            icon: cfg.icon,
+            title: title,
+            text: message || '',
+            timer: 4000,
+            timerProgressBar: true,
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
         });
-    })();
+    }
+
+    function showAlert(type, title, message) {
+        const types = {
+            success: 'success',
+            error: 'error',
+            warning: 'warning',
+            info: 'info',
+        };
+        Swal.fire({
+            ...swalTheme,
+            icon: types[type] || 'info',
+            title: title,
+            text: message || '',
+            confirmButtonText: 'OK',
+        });
+    }
+
+    window.showToast = showToast;
+    window.showAlert = showAlert;
+
+    @if(session('status'))
+        showToast('success', 'Success', '{{ session('status') }}');
+    @endif
+    @if(session('error'))
+        showToast('error', 'Error', '{{ session('error') }}');
+    @endif
+    @if(session('warning'))
+        showToast('warning', 'Warning', '{{ session('warning') }}');
+    @endif
+    @if(session('info'))
+        showToast('info', 'Info', '{{ session('info') }}');
+    @endif
+
+    @if($errors->any())
+        @foreach($errors->all() as $error)
+            showToast('error', 'Validation Error', '{{ $error }}');
+        @endforeach
+    @endif
+
+    // Close user menu on outside click
+    document.addEventListener('click', function(e) {
+        const menu = document.getElementById('userMenu');
+        const btn = document.getElementById('userMenuBtn');
+        if (menu && !menu.contains(e.target) && !btn.contains(e.target)) {
+            menu.classList.add('hidden');
+        }
+    });
     </script>
 
 </body>
