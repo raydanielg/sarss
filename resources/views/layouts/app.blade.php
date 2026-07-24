@@ -22,6 +22,12 @@
         .ajax-loader { position:fixed; top:0; left:0; right:0; height:3px; background: linear-gradient(90deg, #024938, #f9ac00, #024938); background-size: 200% 100%; animation: ajaxProgress 1s linear infinite; z-index:9999; display:none; }
         @keyframes ajaxProgress { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
         .page-transition { animation: simpleFadeIn 0.35s ease-out both; }
+        .swal2-popup.swal2-toast { padding: 8px 14px !important; min-width: 240px !important; max-width: 320px !important; font-size: 13px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.12) !important; }
+        .swal2-popup.swal2-toast .swal2-title { font-size: 14px !important; font-weight: 700 !important; padding: 0 !important; margin: 0 0 2px !important; }
+        .swal2-popup.swal2-toast .swal2-html-container { font-size: 12px !important; color: #6b7280 !important; margin: 0 !important; }
+        .swal2-popup.swal2-toast .swal2-icon { width: 28px !important; height: 28px !important; min-width: 28px !important; }
+        .swal2-popup.swal2-toast .swal2-icon .swal2-icon-content { font-size: 14px !important; }
+        .swal2-popup.swal2-toast .swal2-timer-progress-bar { height: 2px !important; }
     </style>
     <script>
         tailwind.config = {
@@ -63,23 +69,18 @@
     };
 
     function showToast(type, title, message) {
-        const types = {
-            success: { icon: 'success', color: '#024938' },
-            error: { icon: 'error', color: '#dc2626' },
-            warning: { icon: 'warning', color: '#d97706' },
-            info: { icon: 'info', color: '#2563eb' },
-        };
-        const cfg = types[type] || types.info;
+        const icons = { success: 'success', error: 'error', warning: 'warning', info: 'info' };
         Swal.fire({
             ...swalTheme,
-            icon: cfg.icon,
+            icon: icons[type] || 'info',
             title: title,
             text: message || '',
-            timer: 4000,
+            timer: 3500,
             timerProgressBar: true,
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
+            width: '300px',
         });
     }
 
@@ -121,7 +122,7 @@
         @endforeach
     @endif
 
-    // AJAX Navigation System for Auth Pages
+    // AJAX Navigation System
     (function() {
         const authMain = document.getElementById('authMain');
         const ajaxLoader = document.getElementById('ajaxLoader');
@@ -149,8 +150,28 @@
                     void authMain.offsetWidth;
                     authMain.classList.add('page-transition');
                     document.title = doc.title;
+                    // Update CSRF token
+                    if (doc.querySelector('meta[name="csrf-token"]')) {
+                        const token = doc.querySelector('meta[name="csrf-token"]').content;
+                        const localToken = document.querySelector('meta[name="csrf-token"]');
+                        if (localToken) localToken.content = token;
+                    }
+                    // Re-run scripts in the new content
+                    newContent.querySelectorAll('script').forEach(oldScript => {
+                        const newScript = document.createElement('script');
+                        if (oldScript.src) newScript.src = oldScript.src;
+                        else newScript.textContent = oldScript.textContent;
+                        oldScript.parentNode.replaceChild(newScript, oldScript);
+                    });
                     rebindAjaxLinks();
                     rebindForms();
+                    // Re-trigger session toasts from new page
+                    const newScripts = doc.querySelectorAll('script');
+                    newScripts.forEach(s => {
+                        if (s.textContent.includes('showToast')) {
+                            try { eval(s.textContent); } catch(e) {}
+                        }
+                    });
                 }
                 if (pushState) history.pushState({ url: url }, '', url);
                 hideLoader();
@@ -165,10 +186,10 @@
             document.querySelectorAll('a[href]').forEach(function(link) {
                 const href = link.getAttribute('href');
                 if (!href || href.startsWith('#') || href.startsWith('javascript') || href.startsWith('mailto') || href.startsWith('tel') || link.target === '_blank') return;
+                if (link.dataset.ajaxBound) return;
                 const url = new URL(href, location.href);
                 if (url.host !== location.host) return;
-                if (!url.pathname.match(/\/(login|register|password|verify)/)) return;
-                link.removeEventListener('click', handleAjaxClick);
+                link.dataset.ajaxBound = '1';
                 link.addEventListener('click', handleAjaxClick);
             });
         }
@@ -180,12 +201,8 @@
 
         function rebindForms() {
             document.querySelectorAll('form[method="POST"]').forEach(function(form) {
-                const action = form.getAttribute('action') || form.action || '';
-                const url = new URL(action, window.location.href);
-                if (url.pathname.match(/\/(login|register|logout|password|email|verification)/)) {
-                    return;
-                }
-                form.removeEventListener('submit', handleAjaxSubmit);
+                if (form.dataset.ajaxBound) return;
+                form.dataset.ajaxBound = '1';
                 form.addEventListener('submit', handleAjaxSubmit);
             });
         }
@@ -232,12 +249,25 @@
                         void authMain.offsetWidth;
                         authMain.classList.add('page-transition');
                         document.title = doc.title;
-                        rebindAjaxLinks();
-                        rebindForms();
                         if (doc.querySelector('meta[name="csrf-token"]')) {
                             const token = doc.querySelector('meta[name="csrf-token"]').content;
-                            document.querySelector('meta[name="csrf-token"]').content = token;
+                            const localToken = document.querySelector('meta[name="csrf-token"]');
+                            if (localToken) localToken.content = token;
                         }
+                        newContent.querySelectorAll('script').forEach(oldScript => {
+                            const newScript = document.createElement('script');
+                            if (oldScript.src) newScript.src = oldScript.src;
+                            else newScript.textContent = oldScript.textContent;
+                            oldScript.parentNode.replaceChild(newScript, oldScript);
+                        });
+                        rebindAjaxLinks();
+                        rebindForms();
+                        const newScripts = doc.querySelectorAll('script');
+                        newScripts.forEach(s => {
+                            if (s.textContent.includes('showToast')) {
+                                try { eval(s.textContent); } catch(e) {}
+                            }
+                        });
                     } else {
                         window.location.reload();
                     }

@@ -1,0 +1,15 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Stream extends Model
+{
+    protected $fillable = ['name', 'code'];
+
+    public function candidates()
+    {
+        return $this->hasMany(Candidate::class);
+    }
+}
