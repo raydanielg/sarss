@@ -57,7 +57,6 @@
 <div class="bg-white rounded-xl border border-gray-100 p-5 mt-4">
     <div class="flex items-center justify-between mb-4">
         <h3 class="text-sm font-semibold text-gray-900">Assignments</h3>
-        <a href="{{ route('assignments.create') }}" class="text-xs text-emerald-600 font-medium hover:text-emerald-700">+ Create Assignment</a>
     </div>
     <div class="space-y-2">
         @forelse($panel->assignments as $assignment)
