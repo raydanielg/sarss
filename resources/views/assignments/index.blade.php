@@ -5,13 +5,9 @@
 @section('content')
 <div class="mb-6 flex items-center justify-between">
     <p class="text-sm text-gray-500">Manage work assignments for data entry officers.</p>
-    <a href="{{ route('assignments.create') }}" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg transition-colors inline-flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-        Create Assignment
-    </a>
 </div>
 
-<div class="bg-white rounded-xl border border-gray-100 overflow-hidden">
+<div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
     <table class="w-full text-sm">
         <thead><tr class="text-left text-xs text-gray-500 bg-gray-50/50 border-b">
             <th class="px-5 py-3 font-medium">Officer</th>
@@ -30,13 +26,43 @@
                 <td class="px-5 py-3 text-gray-600 text-xs">{{ $assignment->schools->pluck('name')->implode(', ') }}</td>
                 <td class="px-5 py-3 text-gray-600 text-xs">{{ $assignment->panel->examination->name ?? '—' }}</td>
                 <td class="px-5 py-3 text-right">
-                    <form action="{{ route('assignments.destroy', $assignment) }}" method="POST" class="inline" onsubmit="return confirm('Delete this assignment?')">@csrf @method('DELETE')<button class="text-red-500 hover:text-red-600 text-xs font-medium">Delete</button></form>
+                    <button onclick="deleteAssignment('{{ route("assignments.destroy", $assignment) }}')" class="w-8 h-8 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 flex items-center justify-center transition-colors" title="Delete">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    </button>
                 </td>
             </tr>
             @empty
-            <tr><td colspan="6" class="px-5 py-8 text-center text-gray-400">No assignments yet.</td></tr>
+            <tr><td colspan="6" class="px-5 py-12 text-center">
+                <svg class="w-12 h-12 text-gray-200 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                <p class="text-sm text-gray-400">No assignments yet.</p>
+            </td></tr>
             @endforelse
         </tbody>
     </table>
 </div>
+
+<script>
+function deleteAssignment(url) {
+    Swal.fire({
+        title: 'Delete this assignment?',
+        text: 'This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        customClass: { popup: 'rounded-xl' },
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = url;
+            form.innerHTML = '<input type="hidden" name="_token" value="' + document.querySelector('meta[name="csrf-token"]').content + '"><input type="hidden" name="_method" value="DELETE">';
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+}
+</script>
 @endsection
