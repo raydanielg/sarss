@@ -24,7 +24,8 @@ class MarkController extends Controller
         if ($request->assignment_id) {
             $assignment = Assignment::with(['panel.examination', 'panel.subject', 'district', 'schools.district'])
                 ->where('user_id', $user->id)->findOrFail($request->assignment_id);
-            $schoolId = $request->school_id ?? $assignment->schools->first()?->id;
+            $schools = $assignment->schools;
+            $schoolId = $request->school_id ?? $schools->first()?->id;
 
             if ($schoolId) {
                 $candidates = Candidate::where('examination_id', $assignment->examination_id)
@@ -36,8 +37,22 @@ class MarkController extends Controller
                     ->get()->keyBy('candidate_id');
                 $subject = $assignment->panel->subject;
                 $school = \App\Models\School::find($schoolId);
-                return view('marks.entry', compact('assignment', 'school', 'candidates', 'marks', 'subject'));
+
+                $schoolProgress = [];
+                foreach ($schools as $s) {
+                    $total = Candidate::where('examination_id', $assignment->examination_id)
+                        ->where('school_id', $s->id)->count();
+                    $entered = Mark::where('examination_id', $assignment->examination_id)
+                        ->where('subject_id', $assignment->subject_id)
+                        ->where('school_id', $s->id)
+                        ->whereNotNull('mark')->count();
+                    $schoolProgress[$s->id] = ['total' => $total, 'entered' => $entered];
+                }
+
+                return view('marks.entry', compact('assignment', 'school', 'schools', 'schoolProgress', 'candidates', 'marks', 'subject'));
             }
+
+            return view('marks.entry', compact('assignments', 'assignment', 'schools'));
         }
 
         return view('marks.entry', compact('assignments'));
