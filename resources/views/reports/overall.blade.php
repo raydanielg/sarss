@@ -48,34 +48,6 @@
         </div>
     </div>
 
-    {{-- KPI Grid --}}
-    <div class="px-12 mb-8">
-        <div class="grid grid-cols-4 gap-4">
-            @php
-            $kpis = [
-                ['label'=>'Candidates','value'=>$totalCandidates,'sub'=>'Registered','icon'=>'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z','bg'=>'bg-emerald-50','text'=>'text-emerald-600','border'=>'border-emerald-100'],
-                ['label'=>'Schools','value'=>$totalSchools,'sub'=>'Participating','icon'=>'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1','bg'=>'bg-amber-50','text'=>'text-amber-600','border'=>'border-amber-100'],
-                ['label'=>'Subjects','value'=>$totalSubjects,'sub'=>'Examinable','icon'=>'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2','bg'=>'bg-sky-50','text'=>'text-sky-600','border'=>'border-sky-100'],
-                ['label'=>'Total Marks','value'=>$totalMarks,'sub'=>'Expected entries','icon'=>'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2','bg'=>'bg-violet-50','text'=>'text-violet-600','border'=>'border-violet-100'],
-            ];
-            @endphp
-            @foreach($kpis as $kpi)
-            <div class="border {{ $kpi['border'] }} rounded-xl p-4">
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="w-10 h-10 rounded-lg {{ $kpi['bg'] }} flex items-center justify-center flex-shrink-0">
-                        <svg class="w-5 h-5 {{ $kpi['text'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $kpi['icon'] }}"/></svg>
-                    </div>
-                    <div>
-                        <p class="text-[9px] text-gray-400 font-medium uppercase tracking-wide">{{ $kpi['label'] }}</p>
-                        <p class="text-[8px] text-gray-300">{{ $kpi['sub'] }}</p>
-                    </div>
-                </div>
-                <p class="text-3xl font-bold text-gray-900 tracking-tight">{{ $kpi['value'] }}</p>
-            </div>
-            @endforeach
-        </div>
-    </div>
-
     {{-- Summary Table --}}
     <div class="px-12 mb-8">
         <h3 class="text-sm font-bold text-gray-900 mb-4 pb-2 border-b-2 border-gray-800">Examination Statistics</h3>
