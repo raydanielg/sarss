@@ -113,8 +113,7 @@ function deleteItem(url) {
         cancelButtonText: 'Cancel',
         confirmButtonColor: '#ef4444',
         cancelButtonColor: '#6b7280',
-        customClass: { popup: 'rounded-xl', confirmButton: 'px-5 py-2 rounded-lg text-sm font-semibold text-white', cancelButton: 'px-5 py-2 rounded-lg text-sm font-semibold text-white' },
-        buttonsStyling: false,
+        customClass: { popup: 'rounded-xl' },
     }).then((result) => {
         if (result.isConfirmed) {
             const form = document.createElement('form');
