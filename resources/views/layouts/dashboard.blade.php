@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('logo.png') }}">
 
     <title>@yield('title', config('app.name', 'e-Mark'))</title>
 
@@ -54,9 +56,7 @@
     <aside id="dashSidebar" class="fixed top-0 left-0 z-50 w-64 h-screen bg-emerald-900 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 flex flex-col">
         {{-- Brand --}}
         <div class="h-16 flex items-center px-6 border-b border-emerald-800/50 flex-shrink-0">
-            <div class="w-9 h-9 bg-gradient-to-br from-gold-300 to-gold-500 rounded-xl flex items-center justify-center shadow-lg shadow-gold-500/20">
-                <svg class="w-5 h-5 text-emerald-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-            </div>
+            <img src="{{ asset('logo.png') }}" alt="{{ config('app.name', 'e-Mark') }}" class="w-9 h-9 rounded-xl object-cover shadow-lg">
             <span class="ml-2.5 text-white font-extrabold text-base tracking-tight">{{ config('app.name', 'e-Mark') }}</span>
         </div>
 
