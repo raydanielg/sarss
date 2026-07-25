@@ -49,100 +49,71 @@
     </div>
 
     {{-- KPI Grid --}}
-    <div class="px-12 mb-6">
-        <div class="grid grid-cols-4 gap-3">
+    <div class="px-12 mb-8">
+        <div class="grid grid-cols-4 gap-4">
             @php
             $kpis = [
-                ['label'=>'Candidates','value'=>$totalCandidates,'icon'=>'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z','color'=>'emerald'],
-                ['label'=>'Schools','value'=>$totalSchools,'icon'=>'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1','color'=>'amber'],
-                ['label'=>'Subjects','value'=>$totalSubjects,'icon'=>'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2','color'=>'sky'],
-                ['label'=>'Total Marks','value'=>$totalMarks,'icon'=>'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2','color'=>'violet'],
+                ['label'=>'Candidates','value'=>$totalCandidates,'sub'=>'Registered','icon'=>'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z','bg'=>'bg-emerald-50','text'=>'text-emerald-600','border'=>'border-emerald-100'],
+                ['label'=>'Schools','value'=>$totalSchools,'sub'=>'Participating','icon'=>'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1','bg'=>'bg-amber-50','text'=>'text-amber-600','border'=>'border-amber-100'],
+                ['label'=>'Subjects','value'=>$totalSubjects,'sub'=>'Examinable','icon'=>'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2','bg'=>'bg-sky-50','text'=>'text-sky-600','border'=>'border-sky-100'],
+                ['label'=>'Total Marks','value'=>$totalMarks,'sub'=>'Expected entries','icon'=>'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2','bg'=>'bg-violet-50','text'=>'text-violet-600','border'=>'border-violet-100'],
             ];
             @endphp
             @foreach($kpis as $kpi)
-            <div class="border border-gray-200 rounded-lg p-3 text-center">
-                <div class="w-8 h-8 rounded-lg bg-{{ $kpi['color'] }}-50 flex items-center justify-center mx-auto mb-2">
-                    <svg class="w-4 h-4 text-{{ $kpi['color'] }}-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $kpi['icon'] }}"/></svg>
+            <div class="border {{ $kpi['border'] }} rounded-xl p-4">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 rounded-lg {{ $kpi['bg'] }} flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 {{ $kpi['text'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $kpi['icon'] }}"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-[9px] text-gray-400 font-medium uppercase tracking-wide">{{ $kpi['label'] }}</p>
+                        <p class="text-[8px] text-gray-300">{{ $kpi['sub'] }}</p>
+                    </div>
                 </div>
-                <p class="text-xl font-bold text-gray-900">{{ $kpi['value'] }}</p>
-                <p class="text-[9px] text-gray-400 font-medium uppercase tracking-wide">{{ $kpi['label'] }}</p>
+                <p class="text-3xl font-bold text-gray-900 tracking-tight">{{ $kpi['value'] }}</p>
             </div>
             @endforeach
         </div>
     </div>
 
-    {{-- Progress Section --}}
-    <div class="px-12 mb-6">
-        <h3 class="text-sm font-bold text-gray-900 mb-3 pb-2 border-b border-gray-100">Progress Summary</h3>
-        <div class="grid grid-cols-2 gap-4">
-            {{-- Completion Rate --}}
-            <div class="border border-gray-200 rounded-lg p-4">
-                <div class="flex items-center justify-between mb-3">
-                    <p class="text-xs font-semibold text-gray-700">Completion Rate</p>
-                    <span class="text-lg font-bold text-emerald-600">{{ $completionRate }}%</span>
-                </div>
-                <div class="w-full bg-gray-100 rounded-full h-3 mb-2">
-                    <div class="bg-gradient-to-r from-emerald-400 to-emerald-600 h-3 rounded-full" style="width: {{ $completionRate }}%"></div>
-                </div>
-                <div class="flex justify-between text-[10px] text-gray-400">
-                    <span>Entered: <span class="font-semibold text-gray-700">{{ $enteredMarks }}</span></span>
-                    <span>Total: <span class="font-semibold text-gray-700">{{ $totalMarks }}</span></span>
-                </div>
-            </div>
-            {{-- Verification Rate --}}
-            <div class="border border-gray-200 rounded-lg p-4">
-                <div class="flex items-center justify-between mb-3">
-                    <p class="text-xs font-semibold text-gray-700">Verification Rate</p>
-                    <span class="text-lg font-bold text-amber-600">{{ $verificationRate }}%</span>
-                </div>
-                <div class="w-full bg-gray-100 rounded-full h-3 mb-2">
-                    <div class="bg-gradient-to-r from-amber-400 to-amber-500 h-3 rounded-full" style="width: {{ $verificationRate }}%"></div>
-                </div>
-                <div class="flex justify-between text-[10px] text-gray-400">
-                    <span>Verified: <span class="font-semibold text-gray-700">{{ $verifiedMarks }}</span></span>
-                    <span>Entered: <span class="font-semibold text-gray-700">{{ $enteredMarks }}</span></span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- Detailed Progress Bars --}}
-    <div class="px-12 mb-6">
-        <h3 class="text-sm font-bold text-gray-900 mb-3 pb-2 border-b border-gray-100">Detailed Breakdown</h3>
-        <div class="space-y-4">
-            <div>
-                <div class="flex justify-between text-xs mb-1.5">
-                    <span class="text-gray-600 font-medium">Marks Entered</span>
-                    <span class="font-semibold text-gray-900">{{ $enteredMarks }} / {{ $totalMarks }} ({{ $completionRate }}%)</span>
-                </div>
-                <div class="w-full bg-gray-100 rounded-full h-3">
-                    <div class="bg-gradient-to-r from-emerald-400 to-emerald-600 h-3 rounded-full" style="width: {{ $completionRate }}%"></div>
-                </div>
-            </div>
-            <div>
-                <div class="flex justify-between text-xs mb-1.5">
-                    <span class="text-gray-600 font-medium">Marks Verified</span>
-                    <span class="font-semibold text-gray-900">{{ $verifiedMarks }} / {{ $totalMarks }} ({{ $totalMarks > 0 ? round($verifiedMarks/$totalMarks*100,1) : 0 }}%)</span>
-                </div>
-                <div class="w-full bg-gray-100 rounded-full h-3">
-                    <div class="bg-gradient-to-r from-amber-400 to-amber-500 h-3 rounded-full" style="width: {{ $totalMarks > 0 ? round($verifiedMarks/$totalMarks*100,1) : 0 }}%"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     {{-- Summary Table --}}
-    <div class="px-12 mb-6">
-        <h3 class="text-sm font-bold text-gray-900 mb-3 pb-2 border-b border-gray-100">Summary Statistics</h3>
-        <table class="w-full text-xs">
+    <div class="px-12 mb-8">
+        <h3 class="text-sm font-bold text-gray-900 mb-4 pb-2 border-b-2 border-gray-800">Examination Statistics</h3>
+        <table class="w-full text-xs border-collapse">
+            <thead>
+                <tr class="bg-gray-50">
+                    <th class="text-left py-2.5 px-4 font-semibold text-gray-600 border border-gray-200">Metric</th>
+                    <th class="text-right py-2.5 px-4 font-semibold text-gray-600 border border-gray-200 w-32">Value</th>
+                    <th class="text-right py-2.5 px-4 font-semibold text-gray-600 border border-gray-200 w-24">Rate</th>
+                </tr>
+            </thead>
             <tbody>
-                <tr class="border-b border-gray-50"><td class="py-2 text-gray-500">Total Candidates</td><td class="py-2 text-right font-semibold text-gray-900">{{ $totalCandidates }}</td></tr>
-                <tr class="border-b border-gray-50"><td class="py-2 text-gray-500">Participating Schools</td><td class="py-2 text-right font-semibold text-gray-900">{{ $totalSchools }}</td></tr>
-                <tr class="border-b border-gray-50"><td class="py-2 text-gray-500">Examinable Subjects</td><td class="py-2 text-right font-semibold text-gray-900">{{ $totalSubjects }}</td></tr>
-                <tr class="border-b border-gray-50"><td class="py-2 text-gray-500">Total Expected Marks</td><td class="py-2 text-right font-semibold text-gray-900">{{ $totalMarks }}</td></tr>
-                <tr class="border-b border-gray-50"><td class="py-2 text-gray-500">Marks Entered</td><td class="py-2 text-right font-semibold text-emerald-600">{{ $enteredMarks }}</td></tr>
-                <tr class="border-b border-gray-50"><td class="py-2 text-gray-500">Marks Verified</td><td class="py-2 text-right font-semibold text-amber-600">{{ $verifiedMarks }}</td></tr>
-                <tr><td class="py-2 text-gray-500">Completion Rate</td><td class="py-2 text-right font-bold text-gray-900">{{ $completionRate }}%</td></tr>
+                <tr class="hover:bg-gray-50/50"><td class="py-2.5 px-4 text-gray-600 border border-gray-200">Total Candidates</td><td class="py-2.5 px-4 text-right font-bold text-gray-900 border border-gray-200">{{ $totalCandidates }}</td><td class="py-2.5 px-4 text-right text-gray-300 border border-gray-200">—</td></tr>
+                <tr class="hover:bg-gray-50/50"><td class="py-2.5 px-4 text-gray-600 border border-gray-200">Participating Schools</td><td class="py-2.5 px-4 text-right font-bold text-gray-900 border border-gray-200">{{ $totalSchools }}</td><td class="py-2.5 px-4 text-right text-gray-300 border border-gray-200">—</td></tr>
+                <tr class="hover:bg-gray-50/50"><td class="py-2.5 px-4 text-gray-600 border border-gray-200">Examinable Subjects</td><td class="py-2.5 px-4 text-right font-bold text-gray-900 border border-gray-200">{{ $totalSubjects }}</td><td class="py-2.5 px-4 text-right text-gray-300 border border-gray-200">—</td></tr>
+                <tr class="hover:bg-gray-50/50"><td class="py-2.5 px-4 text-gray-600 border border-gray-200">Total Expected Marks</td><td class="py-2.5 px-4 text-right font-bold text-gray-900 border border-gray-200">{{ $totalMarks }}</td><td class="py-2.5 px-4 text-right text-gray-300 border border-gray-200">—</td></tr>
+                <tr class="bg-emerald-50/30"><td class="py-2.5 px-4 text-gray-600 border border-gray-200">Marks Entered</td><td class="py-2.5 px-4 text-right font-bold text-emerald-600 border border-gray-200">{{ $enteredMarks }}</td><td class="py-2.5 px-4 text-right font-bold text-emerald-600 border border-gray-200">{{ $completionRate }}%</td></tr>
+                <tr class="bg-amber-50/30"><td class="py-2.5 px-4 text-gray-600 border border-gray-200">Marks Verified</td><td class="py-2.5 px-4 text-right font-bold text-amber-600 border border-gray-200">{{ $verifiedMarks }}</td><td class="py-2.5 px-4 text-right font-bold text-amber-600 border border-gray-200">{{ $verificationRate }}%</td></tr>
+                <tr class="hover:bg-gray-50/50"><td class="py-2.5 px-4 text-gray-600 border border-gray-200">Pending Marks</td><td class="py-2.5 px-4 text-right font-bold text-gray-900 border border-gray-200">{{ $totalMarks - $enteredMarks }}</td><td class="py-2.5 px-4 text-right text-gray-400 border border-gray-200">{{ $totalMarks > 0 ? round(($totalMarks - $enteredMarks)/$totalMarks*100,1) : 0 }}%</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    {{-- Examination Info Table --}}
+    <div class="px-12 mb-8">
+        <h3 class="text-sm font-bold text-gray-900 mb-4 pb-2 border-b-2 border-gray-800">Examination Details</h3>
+        <table class="w-full text-xs border-collapse">
+            <tbody>
+                <tr><td class="py-2 px-4 text-gray-500 border border-gray-200 bg-gray-50/50 w-40 font-medium">Examination Name</td><td class="py-2 px-4 text-gray-900 font-semibold border border-gray-200">{{ $examination->name }}</td></tr>
+                <tr><td class="py-2 px-4 text-gray-500 border border-gray-200 bg-gray-50/50 font-medium">Academic Year</td><td class="py-2 px-4 text-gray-900 font-semibold border border-gray-200">{{ $examination->academicYear->year ?? '—' }}</td></tr>
+                <tr><td class="py-2 px-4 text-gray-500 border border-gray-200 bg-gray-50/50 font-medium">Exam Type</td><td class="py-2 px-4 text-gray-900 font-semibold border border-gray-200">{{ $examination->examType->name ?? '—' }}</td></tr>
+                <tr><td class="py-2 px-4 text-gray-500 border border-gray-200 bg-gray-50/50 font-medium">Region</td><td class="py-2 px-4 text-gray-900 font-semibold border border-gray-200">{{ $examination->region->name ?? '—' }}</td></tr>
+                <tr><td class="py-2 px-4 text-gray-500 border border-gray-200 bg-gray-50/50 font-medium">Start Date</td><td class="py-2 px-4 text-gray-900 font-semibold border border-gray-200">{{ $examination->start_date?->format('d F Y') ?? '—' }}</td></tr>
+                <tr><td class="py-2 px-4 text-gray-500 border border-gray-200 bg-gray-50/50 font-medium">End Date</td><td class="py-2 px-4 text-gray-900 font-semibold border border-gray-200">{{ $examination->end_date?->format('d F Y') ?? '—' }}</td></tr>
+                <tr><td class="py-2 px-4 text-gray-500 border border-gray-200 bg-gray-50/50 font-medium">Status</td><td class="py-2 px-4 text-gray-900 font-semibold border border-gray-200 capitalize">{{ $examination->status }}</td></tr>
+                @if($examination->description)
+                <tr><td class="py-2 px-4 text-gray-500 border border-gray-200 bg-gray-50/50 font-medium align-top">Description</td><td class="py-2 px-4 text-gray-600 border border-gray-200">{{ $examination->description }}</td></tr>
+                @endif
             </tbody>
         </table>
     </div>
