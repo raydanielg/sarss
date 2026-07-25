@@ -69,7 +69,77 @@ class HomeController extends Controller
         $notifications = Notification::where('user_id', $user->id)
             ->whereNull('read_at')->orderBy('created_at', 'desc')->take(5)->get();
 
-        return view('home', compact('stats', 'recentExams', 'notifications'));
+        // Login activities (recent logins across system for admin, own logins for others)
+        $loginActivities = \App\Models\AuditLog::with('user')
+            ->where('action', 'login')
+            ->orderBy('created_at', 'desc')
+            ->take(6)
+            ->get();
+
+        // Chart data for admin/exam_admin/viewer
+        $chartData = [];
+        if ($user->hasAnyRole(['super_admin', 'exam_admin', 'viewer'])) {
+            // Marks progress by subject (bar chart)
+            $subjects = \App\Models\Subject::orderBy('name')->take(6)->get();
+            $subjectLabels = [];
+            $subjectEntered = [];
+            $subjectVerified = [];
+            foreach ($subjects as $sub) {
+                $subjectLabels[] = $sub->name;
+                $subjectEntered[] = Mark::where('subject_id', $sub->id)->whereNotNull('mark')->count();
+                $subjectVerified[] = Mark::where('subject_id', $sub->id)->where('status', 'verified')->count();
+            }
+
+            // Exam status distribution (donut chart)
+            $examStatuses = [
+                'draft' => Examination::where('status', 'draft')->count(),
+                'open' => Examination::where('status', 'open')->count(),
+                'closed' => Examination::where('status', 'closed')->count(),
+                'archived' => Examination::where('status', 'archived')->count(),
+            ];
+
+            // Overall marks progress (circular)
+            $totalMarks = Mark::count();
+            $enteredMarks = Mark::whereNotNull('mark')->count();
+            $verifiedMarks = Mark::where('status', 'verified')->count();
+
+            $chartData = [
+                'subject_labels' => $subjectLabels,
+                'subject_entered' => $subjectEntered,
+                'subject_verified' => $subjectVerified,
+                'exam_statuses' => $examStatuses,
+                'total_marks' => $totalMarks,
+                'entered_marks' => $enteredMarks,
+                'verified_marks' => $verifiedMarks,
+                'entry_pct' => $totalMarks > 0 ? round($enteredMarks / $totalMarks * 100, 1) : 0,
+                'verification_pct' => $enteredMarks > 0 ? round($verifiedMarks / $enteredMarks * 100, 1) : 0,
+            ];
+        } elseif ($user->hasRole('moderator')) {
+            $panels = Panel::where('moderator_user_id', $user->id)->pluck('id');
+            $examIds = Panel::where('moderator_user_id', $user->id)->pluck('examination_id');
+            $totalMarks = Mark::whereIn('examination_id', $examIds)->count();
+            $enteredMarks = Mark::whereIn('examination_id', $examIds)->whereNotNull('mark')->count();
+            $verifiedMarks = Mark::whereIn('examination_id', $examIds)->where('status', 'verified')->count();
+
+            $chartData = [
+                'total_marks' => $totalMarks,
+                'entered_marks' => $enteredMarks,
+                'verified_marks' => $verifiedMarks,
+                'entry_pct' => $totalMarks > 0 ? round($enteredMarks / $totalMarks * 100, 1) : 0,
+                'verification_pct' => $enteredMarks > 0 ? round($verifiedMarks / $enteredMarks * 100, 1) : 0,
+            ];
+        } elseif ($user->hasRole('data_entry')) {
+            $totalEntered = Mark::where('entered_by', $user->id)->whereNotNull('mark')->count();
+            $verifiedMarks = Mark::where('entered_by', $user->id)->where('status', 'verified')->count();
+            $chartData = [
+                'entered_marks' => $totalEntered,
+                'verified_marks' => $verifiedMarks,
+                'entry_pct' => 100,
+                'verification_pct' => $totalEntered > 0 ? round($verifiedMarks / $totalEntered * 100, 1) : 0,
+            ];
+        }
+
+        return view('home', compact('stats', 'recentExams', 'notifications', 'loginActivities', 'chartData'));
     }
 
     public function forcePassword()
