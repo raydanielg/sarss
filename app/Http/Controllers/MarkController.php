@@ -40,7 +40,7 @@ class MarkController extends Controller
             }
         }
 
-        return view('marks.assignments', compact('assignments'));
+        return view('marks.entry', compact('assignments'));
     }
 
     public function save(Request $request)
@@ -75,6 +75,65 @@ class MarkController extends Controller
         }
         $this->logAction('entry', 'Marks', "Entered {$saved} marks for school #{$request->school_id}");
         return back()->with('status', "{$saved} marks saved successfully.");
+    }
+
+    public function autoSave(Request $request)
+    {
+        $request->validate([
+            'assignment_id' => 'required|exists:assignments,id',
+            'school_id' => 'required|exists:schools,id',
+            'candidate_id' => 'required|exists:candidates,id',
+            'mark' => 'nullable|numeric|min:0',
+        ]);
+
+        $assignment = Assignment::where('user_id', auth()->id())->findOrFail($request->assignment_id);
+        $subject = $assignment->panel->subject;
+
+        if ($request->mark !== null && $request->mark !== '' && $request->mark > $subject->max_marks) {
+            return response()->json(['success' => false, 'message' => 'Mark exceeds maximum of ' . $subject->max_marks], 422);
+        }
+
+        $existing = Mark::where('examination_id', $assignment->examination_id)
+            ->where('candidate_id', $request->candidate_id)
+            ->where('subject_id', $assignment->subject_id)
+            ->where('school_id', $request->school_id)
+            ->first();
+
+        if ($existing && in_array($existing->status, ['verified', 'locked'])) {
+            return response()->json(['success' => false, 'message' => 'Mark is ' . $existing->status . ' and cannot be edited'], 422);
+        }
+
+        $markValue = ($request->mark === null || $request->mark === '') ? null : $request->mark;
+        $status = $markValue === null ? 'pending' : 'entered';
+
+        Mark::updateOrCreate(
+            [
+                'examination_id' => $assignment->examination_id,
+                'candidate_id' => $request->candidate_id,
+                'subject_id' => $assignment->subject_id,
+                'school_id' => $request->school_id,
+            ],
+            [
+                'mark' => $markValue,
+                'status' => $status,
+                'entered_by' => auth()->id(),
+                'entered_at' => $markValue !== null ? now() : null,
+            ]
+        );
+
+        $total = Candidate::where('examination_id', $assignment->examination_id)
+            ->where('school_id', $request->school_id)->count();
+        $entered = Mark::where('examination_id', $assignment->examination_id)
+            ->where('subject_id', $assignment->subject_id)
+            ->where('school_id', $request->school_id)
+            ->whereNotNull('mark')->count();
+
+        return response()->json([
+            'success' => true,
+            'entered' => $entered,
+            'total' => $total,
+            'percentage' => $total > 0 ? round($entered / $total * 100, 1) : 0,
+        ]);
     }
 
     public function myProgress()
