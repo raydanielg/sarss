@@ -50,6 +50,7 @@ Route::middleware(['auth'])->group(function () {
     // Marks Entry
     Route::get('/marks/entry', [App\Http\Controllers\MarkController::class, 'entry'])->name('marks.entry');
     Route::post('/marks/save', [App\Http\Controllers\MarkController::class, 'save'])->name('marks.save');
+    Route::post('/marks/auto-save', [App\Http\Controllers\MarkController::class, 'autoSave'])->name('marks.auto-save');
     Route::get('/marks/progress', [App\Http\Controllers\MarkController::class, 'myProgress'])->name('marks.progress');
 
     // Verification
