@@ -6,7 +6,6 @@
     <div class="w-full max-w-md">
         <div class="bg-white rounded-2xl shadow-2xl p-8">
             <div class="text-center mb-6">
-                <img src="{{ asset('logo.png') }}" alt="{{ config('app.name') }}" class="w-14 h-14 rounded-2xl object-cover shadow-lg mx-auto mb-3">
                 <h1 class="text-xl font-bold text-gray-900">Change Your Password</h1>
                 <p class="text-xs text-gray-400 mt-1">For security, you must change your temporary password before continuing.</p>
             </div>

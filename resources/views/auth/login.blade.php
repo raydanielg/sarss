@@ -7,7 +7,6 @@
     <div class="bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden">
         {{-- Header --}}
         <div class="px-8 pt-8 pb-5 text-center border-b border-gray-50">
-            <img src="{{ asset('logo.png') }}" alt="{{ config('app.name', 'SARS') }}" class="w-16 h-16 rounded-2xl object-cover shadow-lg mx-auto mb-3">
             <h2 class="text-2xl font-extrabold text-gray-800">Welcome Back</h2>
             <p class="text-gray-400 text-sm mt-1.5">Sign in to your {{ config('app.name', 'SARS') }} account</p>
         </div>
