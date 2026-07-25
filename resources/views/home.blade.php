@@ -126,7 +126,7 @@
             @endforelse
         </div>
     </div>
-    @end
+    @endif
 
     {{-- Circular Progress + Donut --}}
     <div class="bg-white rounded-2xl border border-gray-100 p-5">
@@ -188,7 +188,7 @@
                 </div>
             </div>
         </div>
-        @end
+        @endif
     </div>
 </div>
 
@@ -218,7 +218,7 @@
             @endforelse
         </div>
     </div>
-    @end
+    @endif
 
     {{-- Login Activities --}}
     <div class="bg-white rounded-2xl border border-gray-100 p-5">
@@ -235,7 +235,7 @@
                 <div class="min-w-0 flex-1">
                     <p class="text-xs font-semibold text-gray-900 truncate">{{ $log->user->name ?? 'System' }}</p>
                     <p class="text-[10px] text-gray-400">{{ $log->created_at->diffForHumans() }}</p>
-                    @if($log->ip_address)<p class="text-[9px] text-gray-300 font-mono mt-0.5">{{ $log->ip_address }}</p>@end
+                    @if($log->ip_address)<p class="text-[9px] text-gray-300 font-mono mt-0.5">{{ $log->ip_address }}</p>@endif
                 </div>
                 <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-medium bg-emerald-50 text-emerald-600 border border-emerald-100 shrink-0">Login</span>
             </div>
@@ -267,7 +267,7 @@
                     @if($notification->type === 'success')bg-emerald-50 text-emerald-600
                     @elseif($notification->type === 'error')bg-red-50 text-red-600
                     @elseif($notification->type === 'warning')bg-amber-50 text-amber-600
-                    @else bg-sky-50 text-sky-600 @end">
+                    @else bg-sky-50 text-sky-600 @endif">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5"/></svg>
                 </div>
                 <div class="min-w-0 flex-1">
@@ -305,7 +305,7 @@
                 </div>
                 <span class="text-[10px] font-medium text-amber-700 text-center">Candidates</span>
             </a>
-            @end
+            @endif
             @if(auth()->user()->hasAnyRole(['super_admin','exam_admin','moderator']))
             <a href="{{ route('panels.index') }}" class="flex flex-col items-center gap-2 p-4 rounded-2xl bg-sky-50 hover:bg-sky-100 transition-colors group">
                 <div class="w-10 h-10 rounded-xl bg-sky-100 group-hover:bg-sky-200 flex items-center justify-center transition-colors">
@@ -313,7 +313,7 @@
                 </div>
                 <span class="text-[10px] font-medium text-sky-700 text-center">Panels</span>
             </a>
-            @end
+            @endif
             @if(auth()->user()->hasRole('data_entry'))
             <a href="{{ route('marks.entry') }}" class="flex flex-col items-center gap-2 p-4 rounded-2xl bg-emerald-50 hover:bg-emerald-100 transition-colors group">
                 <div class="w-10 h-10 rounded-xl bg-emerald-100 group-hover:bg-emerald-200 flex items-center justify-center transition-colors">
@@ -321,7 +321,7 @@
                 </div>
                 <span class="text-[10px] font-medium text-emerald-700 text-center">Enter Marks</span>
             </a>
-            @end
+            @endif
             @if(auth()->user()->hasRole('moderator'))
             <a href="{{ route('verification.index') }}" class="flex flex-col items-center gap-2 p-4 rounded-2xl bg-violet-50 hover:bg-violet-100 transition-colors group">
                 <div class="w-10 h-10 rounded-xl bg-violet-100 group-hover:bg-violet-200 flex items-center justify-center transition-colors">
@@ -329,7 +329,7 @@
                 </div>
                 <span class="text-[10px] font-medium text-violet-700 text-center">Verify</span>
             </a>
-            @end
+            @endif
             @if(auth()->user()->hasAnyRole(['super_admin','exam_admin','moderator','viewer']))
             <a href="{{ route('reports.index') }}" class="flex flex-col items-center gap-2 p-4 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-colors group">
                 <div class="w-10 h-10 rounded-xl bg-gray-100 group-hover:bg-gray-200 flex items-center justify-center transition-colors">
@@ -337,7 +337,7 @@
                 </div>
                 <span class="text-[10px] font-medium text-gray-700 text-center">Reports</span>
             </a>
-            @end
+            @endif
             @if(auth()->user()->hasRole('super_admin'))
             <a href="{{ route('users.index') }}" class="flex flex-col items-center gap-2 p-4 rounded-2xl bg-rose-50 hover:bg-rose-100 transition-colors group">
                 <div class="w-10 h-10 rounded-xl bg-rose-100 group-hover:bg-rose-200 flex items-center justify-center transition-colors">
@@ -345,7 +345,7 @@
                 </div>
                 <span class="text-[10px] font-medium text-rose-700 text-center">Users</span>
             </a>
-            @end
+            @endif
         </div>
     </div>
 </div>
@@ -407,7 +407,7 @@ new Chart(document.getElementById('chart-donut'), {
         plugins: { legend: { display: false } }
     }
 });
-@end
+@endif
 </script>
 @endpush
 @endsection
