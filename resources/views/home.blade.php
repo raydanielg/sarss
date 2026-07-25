@@ -24,69 +24,44 @@
 @endif
 
 {{-- KPI Cards --}}
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
     @php
         $cards = [];
         if(auth()->user()->hasAnyRole(['super_admin','exam_admin','viewer'])) {
             $cards = [
-                ['label'=>'Examinations','value'=>$stats['examinations'] ?? 0,'sub'=>'Total created','color'=>'emerald','bg'=>'bg-emerald-50','text'=>'text-emerald-600'],
-                ['label'=>'Active Exams','value'=>$stats['active_exams'] ?? 0,'sub'=>'Currently open','color'=>'amber','bg'=>'bg-amber-50','text'=>'text-amber-600'],
-                ['label'=>'Candidates','value'=>$stats['candidates'] ?? 0,'sub'=>'Registered','color'=>'sky','bg'=>'bg-sky-50','text'=>'text-sky-600'],
-                ['label'=>'Total Users','value'=>$stats['users'] ?? 0,'sub'=>'System accounts','color'=>'violet','bg'=>'bg-violet-50','text'=>'text-violet-600'],
+                ['label'=>'Examinations','value'=>$stats['examinations'] ?? 0,'sub'=>'Total created','icon'=>'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z','from'=>'emerald-600','to'=>'emerald-700','border'=>'emerald-500','text'=>'emerald-100','subtext'=>'emerald-200'],
+                ['label'=>'Active Exams','value'=>$stats['active_exams'] ?? 0,'sub'=>'Currently open','icon'=>'M13 10V3L4 14h7v7l9-11h-7z','from'=>'amber-400','to'=>'amber-500','border'=>'amber-300','text'=>'amber-50','subtext'=>'amber-100'],
+                ['label'=>'Candidates','value'=>$stats['candidates'] ?? 0,'sub'=>'Registered','icon'=>'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z','from'=>'sky-500','to'=>'sky-600','border'=>'sky-400','text'=>'sky-100','subtext'=>'sky-200'],
+                ['label'=>'Total Users','value'=>$stats['users'] ?? 0,'sub'=>'System accounts','icon'=>'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z','from'=>'violet-500','to'=>'violet-600','border'=>'violet-400','text'=>'violet-100','subtext'=>'violet-200'],
             ];
         } elseif(auth()->user()->hasRole('moderator')) {
             $cards = [
-                ['label'=>'My Panels','value'=>$stats['panels'] ?? 0,'sub'=>'Subject panels','color'=>'emerald','bg'=>'bg-emerald-50','text'=>'text-emerald-600'],
-                ['label'=>'Pending Review','value'=>$stats['marks_pending'] ?? 0,'sub'=>'Awaiting action','color'=>'amber','bg'=>'bg-amber-50','text'=>'text-amber-600'],
-                ['label'=>'Verified','value'=>$stats['marks_verified'] ?? 0,'sub'=>'Approved marks','color'=>'sky','bg'=>'bg-sky-50','text'=>'text-sky-600'],
-                ['label'=>'Rejected','value'=>$stats['marks_rejected'] ?? 0,'sub'=>'Needs re-entry','color'=>'red','bg'=>'bg-red-50','text'=>'text-red-600'],
+                ['label'=>'My Panels','value'=>$stats['panels'] ?? 0,'sub'=>'Subject panels','icon'=>'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10','from'=>'emerald-600','to'=>'emerald-700','border'=>'emerald-500','text'=>'emerald-100','subtext'=>'emerald-200'],
+                ['label'=>'Pending Review','value'=>$stats['marks_pending'] ?? 0,'sub'=>'Awaiting action','icon'=>'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z','from'=>'amber-400','to'=>'amber-500','border'=>'amber-300','text'=>'amber-50','subtext'=>'amber-100'],
+                ['label'=>'Verified','value'=>$stats['marks_verified'] ?? 0,'sub'=>'Approved marks','icon'=>'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z','from'=>'sky-500','to'=>'sky-600','border'=>'sky-400','text'=>'sky-100','subtext'=>'sky-200'],
+                ['label'=>'Rejected','value'=>$stats['marks_rejected'] ?? 0,'sub'=>'Needs re-entry','icon'=>'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z','from'=>'red-500','to'=>'red-600','border'=>'red-400','text'=>'red-100','subtext'=>'red-200'],
             ];
         } elseif(auth()->user()->hasRole('data_entry')) {
             $cards = [
-                ['label'=>'Assignments','value'=>$stats['assignments'] ?? 0,'sub'=>'Allocated to you','color'=>'emerald','bg'=>'bg-emerald-50','text'=>'text-emerald-600'],
-                ['label'=>'Schools','value'=>$stats['schools_assigned'] ?? 0,'sub'=>'To enter marks','color'=>'amber','bg'=>'bg-amber-50','text'=>'text-amber-600'],
-                ['label'=>'Marks Entered','value'=>$stats['marks_entered'] ?? 0,'sub'=>'By you','color'=>'sky','bg'=>'bg-sky-50','text'=>'text-sky-600'],
-                ['label'=>'Examinations','value'=>$stats['examinations'] ?? 0,'sub'=>'Active','color'=>'violet','bg'=>'bg-violet-50','text'=>'text-violet-600'],
+                ['label'=>'Assignments','value'=>$stats['assignments'] ?? 0,'sub'=>'Allocated to you','icon'=>'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2','from'=>'emerald-600','to'=>'emerald-700','border'=>'emerald-500','text'=>'emerald-100','subtext'=>'emerald-200'],
+                ['label'=>'Schools','value'=>$stats['schools_assigned'] ?? 0,'sub'=>'To enter marks','icon'=>'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-4a1 1 0 011-1h2a1 1 0 011 1v4','from'=>'amber-400','to'=>'amber-500','border'=>'amber-300','text'=>'amber-50','subtext'=>'amber-100'],
+                ['label'=>'Marks Entered','value'=>$stats['marks_entered'] ?? 0,'sub'=>'By you','icon'=>'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z','from'=>'sky-500','to'=>'sky-600','border'=>'sky-400','text'=>'sky-100','subtext'=>'sky-200'],
+                ['label'=>'Examinations','value'=>$stats['examinations'] ?? 0,'sub'=>'Active','icon'=>'M13 10V3L4 14h7v7l9-11h-7z','from'=>'violet-500','to'=>'violet-600','border'=>'violet-400','text'=>'violet-100','subtext'=>'violet-200'],
             ];
         }
     @endphp
 
     @foreach($cards as $card)
-    <div class="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-md transition-shadow">
-        <div class="flex items-center gap-3 mb-3">
-            <div class="w-11 h-11 rounded-xl {{ $card['bg'] }} flex items-center justify-center shrink-0">
-                @if($card['label'] === 'Examinations' || $card['label'] === 'Examinations')
-                <svg class="w-5 h-5 {{ $card['text'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                @elseif($card['label'] === 'Active Exams')
-                <svg class="w-5 h-5 {{ $card['text'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                @elseif($card['label'] === 'Candidates')
-                <svg class="w-5 h-5 {{ $card['text'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                @elseif($card['label'] === 'Total Users')
-                <svg class="w-5 h-5 {{ $card['text'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                @elseif($card['label'] === 'My Panels')
-                <svg class="w-5 h-5 {{ $card['text'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-                @elseif($card['label'] === 'Pending Review')
-                <svg class="w-5 h-5 {{ $card['text'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                @elseif($card['label'] === 'Verified')
-                <svg class="w-5 h-5 {{ $card['text'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                @elseif($card['label'] === 'Rejected')
-                <svg class="w-5 h-5 {{ $card['text'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                @elseif($card['label'] === 'Assignments')
-                <svg class="w-5 h-5 {{ $card['text'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                @elseif($card['label'] === 'Schools')
-                <svg class="w-5 h-5 {{ $card['text'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-4a1 1 0 011-1h2a1 1 0 011 1v4"/></svg>
-                @elseif($card['label'] === 'Marks Entered')
-                <svg class="w-5 h-5 {{ $card['text'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                @else
-                <svg class="w-5 h-5 {{ $card['text'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                @endif
+    <div class="bg-gradient-to-br from-{{ $card['from'] }} to-{{ $card['to'] }} rounded-xl border border-{{ $card['border'] }} p-4 text-white relative overflow-hidden hover:shadow-lg transition-shadow">
+        <div class="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-8 -mt-8"></div>
+        <div class="relative z-10">
+            <div class="flex items-start justify-between mb-2">
+                <span class="text-[10px] font-medium {{ $card['text'] }}">{{ $card['label'] }}</span>
+                <svg class="w-4 h-4 {{ $card['subtext'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $card['icon'] }}"/></svg>
             </div>
-            <div class="min-w-0">
-                <p class="text-[10px] font-medium text-gray-400 uppercase tracking-wide">{{ $card['label'] }}</p>
-                <p class="text-2xl font-bold text-gray-900 leading-tight">{{ $card['value'] }}</p>
-            </div>
+            <p class="text-xl font-bold tracking-tight text-white">{{ $card['value'] }}</p>
+            <p class="text-[10px] {{ $card['subtext'] }} font-medium mt-1">{{ $card['sub'] }}</p>
         </div>
-        <p class="text-[10px] text-gray-400">{{ $card['sub'] }}</p>
     </div>
     @endforeach
 </div>
